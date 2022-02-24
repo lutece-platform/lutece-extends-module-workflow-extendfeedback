@@ -1,0 +1,16 @@
+<fieldset>
+	<legend>#i18n{module.workflow.extendfeedback.update_status_task_config.title}</legend>
+	<@formGroup labelKey='#i18n{module.workflow.extendfeedback.update_status_task_config.labelStatus}' >
+		<#if statusList??>
+		<#list statusList as status>
+			<#if status.code == '0'>
+			<#assign processed = false/>
+			</#if>
+			<#if status.code == '1'>
+			<#assign processed = true/>
+			</#if>
+			<@radioButton  name='status' value='${status.code!}' labelKey='${status.name!}' params=((config?? && config.status == processed)?string('checked=true','false')!)/>
+		</#list>
+		</#if>
+	</@formGroup>
+</fieldset>
