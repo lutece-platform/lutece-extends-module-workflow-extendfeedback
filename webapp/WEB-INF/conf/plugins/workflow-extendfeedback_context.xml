@@ -13,12 +13,20 @@
     <!-- DAO -->
     <bean id="workflow-extendfeedback.updateStatusFeedbackConfigDAO"
         class="fr.paris.lutece.plugins.workflow.modules.extendfeedback.business.UpdateStatusFeedbackConfigDAO" />
-
+    <bean id="workflow-extendfeedback.taskFeedbackNotificationConfigDAO"
+        class="fr.paris.lutece.plugins.workflow.modules.extendfeedback.business.FeedbackNotificationTaskConfigDAO" />
+        
     <!-- Services -->
     <bean id="workflow-extendfeedback.updateStatusFeedbackConfigService"
         class="fr.paris.lutece.plugins.workflowcore.service.config.TaskConfigService"
         p:taskConfigDAO-ref="workflow-extendfeedback.updateStatusFeedbackConfigDAO" />
 
+    <bean id="workflow-extendfeedback.taskFeedbackNotificationConfigService"
+        class="fr.paris.lutece.plugins.workflowcore.service.config.TaskConfigService"
+        p:taskConfigDAO-ref="workflow-extendfeedback.taskFeedbackNotificationConfigDAO" />
+    <bean id="workflow-extendfeedback.feedbackNotificationService"
+        class="fr.paris.lutece.plugins.workflow.modules.extendfeedback.service.FeedbackNotificationService" />
+        
     <!-- Task -->
     <bean id="workflow-extendfeedback.taskUpdateStatusFeedback"
         class="fr.paris.lutece.plugins.workflowcore.business.task.TaskType"
@@ -40,5 +48,27 @@
         class="fr.paris.lutece.plugins.workflow.modules.extendfeedback.web.UpdateStatusFeedbackTaskComponent"
         p:taskType-ref="workflow-extendfeedback.taskUpdateStatusFeedback"
         p:taskConfigService-ref="workflow-extendfeedback.updateStatusFeedbackConfigService" />
+        
+    <!-- Task Feedback notification -->
+    <bean id="workflow-extendfeedback.taskFeedbackNotification"
+        class="fr.paris.lutece.plugins.workflowcore.business.task.TaskType"
+        p:key="taskFeedbackNotification" p:titleI18nKey="module.workflow.extendfeedback.task_feedback_notification.title"
+        p:beanName="workflow-extendfeedback.feedbackNotificationTask"
+        p:configBeanName="workflow-extendfeedback.feedbackNotificationTaskConfig"
+        p:configRequired="true" p:formTaskRequired="false"
+        p:taskForAutomaticAction="true" />
+
+    <bean id="workflow-extendfeedback.feedbackNotificationTask"
+        class="fr.paris.lutece.plugins.workflow.modules.extendfeedback.service.FeedbackNotificationTask"
+        scope="prototype" />
+        
+    <bean id="workflow-extendfeedback.feedbackNotificationTaskConfig"
+        class="fr.paris.lutece.plugins.workflow.modules.extendfeedback.business.FeedbackNotificationTaskConfig"
+        scope="prototype" />
+
+    <bean id="workflow-extendfeedback.feedbackNotificationTaskComponent"
+        class="fr.paris.lutece.plugins.workflow.modules.extendfeedback.web.FeedbackNotificationTaskComponent"
+        p:taskType-ref="workflow-extendfeedback.taskFeedbackNotification"
+        p:taskConfigService-ref="workflow-extendfeedback.taskFeedbackNotificationConfigService" />
 
 </beans>
