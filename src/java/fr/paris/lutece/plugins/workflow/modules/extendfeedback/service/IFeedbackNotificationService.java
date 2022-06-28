@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2021, City of Paris
+ * Copyright (c) 2002-2022, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,29 +31,42 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.workflow.modules.extendfeedback.util;
+package fr.paris.lutece.plugins.workflow.modules.extendfeedback.service;
+
+import java.util.Map;
+
+import fr.paris.lutece.plugins.extend.modules.feedback.business.ExtendFeedback;
+import fr.paris.lutece.plugins.workflow.modules.extendfeedback.business.FeedbackNotificationTaskConfig;
+import fr.paris.lutece.plugins.workflowcore.business.resource.ResourceHistory;
+import fr.paris.lutece.util.ReferenceList;
 
 /**
  * 
- * WfExtendFeedbackConstants
+ * IFeedbackNotificationService
  *
  */
-public final class WfExtendFeedbackConstants
+public interface IFeedbackNotificationService
 {
-    // BEAN
-    public static final String PLUGIN_NAME = "workflow-extendfeedback";
-    public static final String BEAN_TASK_CONFIG_SERVICE = PLUGIN_NAME + ".updateStatusFeedbackConfigService";
-    public static final String BEAN_NOTIF_CONFIG = PLUGIN_NAME + ".taskFeedbackNotificationConfigService";
-    
-    // MARK
-    public static final String MARK_STATUS_LIST = "statusList";
-    public static final String MARK_CONFIG = "config";
+    /**
+     * Get available markers
+     * 
+     * @param task
+     * @return reference list of available markers
+     */
+    ReferenceList getAvailableMarkers( );
 
     /**
-     * Private constructor
+     * Get available markers values
+     * 
+     * @param extendFeedback
      */
-    private WfExtendFeedbackConstants( )
-    {
+    Map<String, Object> getAvailableMarkersValues( ExtendFeedback extendFeedback );
 
-    }
+    /**
+     * Notify feedback author
+     * 
+     * @param resourceHistory
+     * @param config
+     */
+    void notifyFeedbackAuthor( ResourceHistory resourceHistory, FeedbackNotificationTaskConfig config );
 }
