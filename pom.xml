@@ -56,7 +56,12 @@
             <type>lutece-plugin</type>
         </dependency>
     </dependencies>
-
+    <scm>
+        <connection>scm:https://github.com/lutece-platform/lutece-extends-module-workflow-extendfeedback.git</connection>
+        <developerConnection>scm:https://github.com/lutece-platform/lutece-extends-module-workflow-extendfeedback.git</developerConnection>
+        <url>https://github.com/lutece-platform/lutece-extends-module-workflow-extendfeedback.git</url>
+      <tag>HEAD</tag>
+    </scm>
     <properties>
         <componentName>workflow-extendfeedback</componentName>
         <jiraProjectName>WORKFLOWEXTENDFEEDBACK</jiraProjectName>
