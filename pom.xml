@@ -12,7 +12,7 @@
     <artifactId>module-workflow-extendfeedback</artifactId>
     <packaging>lutece-plugin</packaging>
     
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <name>Lutece workflow extendfeedback module</name>
 
     <repositories>
@@ -59,7 +59,7 @@
         <connection>scm:git:https://github.com/lutece-platform/lutece-extends-module-workflow-extendfeedback.git</connection>
         <developerConnection>scm:git:https://github.com/lutece-platform/lutece-extends-module-workflow-extendfeedback.git</developerConnection>
         <url>https://github.com/lutece-platform/lutece-extends-module-workflow-extendfeedback.git</url>
-      <tag>HEAD</tag>
+      <tag>module-workflow-extendfeedback-1.0.2</tag>
   </scm>
     <properties>
         <componentName>workflow-extendfeedback</componentName>
