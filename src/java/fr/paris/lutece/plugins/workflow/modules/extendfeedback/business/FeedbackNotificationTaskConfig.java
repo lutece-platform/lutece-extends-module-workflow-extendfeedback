@@ -34,17 +34,28 @@
 package fr.paris.lutece.plugins.workflow.modules.extendfeedback.business;
 
 import fr.paris.lutece.plugins.workflowcore.business.config.TaskConfig;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Named;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * 
  * FeedbackNotificationTaskConfig
  *
  */
+@Dependent
+@Named( "workflow-extendfeedback.feedbackNotificationTaskConfig" )
 public class FeedbackNotificationTaskConfig extends TaskConfig
 {
+    @NotBlank
     private String _strMessage;
+    @NotBlank
     private String _strSubject;
+    @NotBlank
+    @Email
     private String _strSenderEmail;
+    @NotBlank
     private String _strSenderName;
 
     /**

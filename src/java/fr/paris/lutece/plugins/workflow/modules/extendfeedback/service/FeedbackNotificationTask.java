@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2022, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,29 +35,25 @@ package fr.paris.lutece.plugins.workflow.modules.extendfeedback.service;
 
 import java.util.Locale;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
-
+import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.workflow.modules.extendfeedback.util.WfExtendFeedbackConstants;
-import fr.paris.lutece.plugins.workflowcore.business.resource.ResourceHistory;
 import fr.paris.lutece.plugins.workflowcore.service.config.ITaskConfigService;
-import fr.paris.lutece.plugins.workflowcore.service.resource.IResourceHistoryService;
-import fr.paris.lutece.plugins.workflowcore.service.resource.ResourceHistoryService;
 import fr.paris.lutece.plugins.workflowcore.service.task.SimpleTask;
 import fr.paris.lutece.portal.service.i18n.I18nService;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 
  * FeedbackNotificationTask
  *
  */
+@Dependent
+@Named( "workflow-extendfeedback.feedbackNotificationTask" )
 public class FeedbackNotificationTask extends SimpleTask
 {
-
-    @Inject
-    @Named( ResourceHistoryService.BEAN_SERVICE )
-    IResourceHistoryService _resourceHistoryService;
 
     @Inject
     @Named( WfExtendFeedbackConstants.BEAN_NOTIF_CONFIG )
@@ -66,20 +62,30 @@ public class FeedbackNotificationTask extends SimpleTask
     @Inject
     private IFeedbackNotificationService _feedbackNotificationService;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void processTask( int nIdResourceHistory, HttpServletRequest request, Locale locale )
+    public boolean processTaskWithResult( int nIdResource, String strResourceType, int nIdResourceHistory, HttpServletRequest request, Locale locale,
+            User user )
     {
-        ResourceHistory resourceHistory = _resourceHistoryService.findByPrimaryKey( nIdResourceHistory );
+        _feedbackNotificationService.notifyFeedbackAuthor( nIdResource, _config.findByPrimaryKey( getId( ) ) );
 
-        _feedbackNotificationService.notifyFeedbackAuthor( resourceHistory, _config.findByPrimaryKey( getId( ) ) );
+        return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getTitle( Locale locale )
     {
         return I18nService.getLocalizedString( getTaskType( ).getTitleI18nKey( ), locale );
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void doRemoveConfig( )
     {

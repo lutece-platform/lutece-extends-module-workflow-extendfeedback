@@ -34,12 +34,16 @@
 package fr.paris.lutece.plugins.workflow.modules.extendfeedback.business;
 
 import fr.paris.lutece.plugins.workflowcore.business.config.TaskConfig;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Named;
 
 /**
  * 
  * UpdateStatusFeedbackConfig
  *
  */
+@Dependent
+@Named( "workflow-extendfeedback.updateStatusFeedbackTaskConfig" )
 public class UpdateStatusFeedbackConfig extends TaskConfig
 {
     private boolean _bStatus;

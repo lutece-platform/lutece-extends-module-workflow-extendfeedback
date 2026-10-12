@@ -34,13 +34,18 @@
 package fr.paris.lutece.plugins.workflow.modules.extendfeedback.business;
 
 import fr.paris.lutece.plugins.workflowcore.business.config.ITaskConfigDAO;
+import fr.paris.lutece.plugins.workflow.modules.extendfeedback.util.WfExtendFeedbackConstants;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 
 /**
  * 
  * FeedbackNotificationTaskConfigDAO
  *
  */
+@ApplicationScoped
+@Named( WfExtendFeedbackConstants.BEAN_NOTIF_CONFIG_DAO )
 public class FeedbackNotificationTaskConfigDAO implements ITaskConfigDAO<FeedbackNotificationTaskConfig>
 {
     // Constants

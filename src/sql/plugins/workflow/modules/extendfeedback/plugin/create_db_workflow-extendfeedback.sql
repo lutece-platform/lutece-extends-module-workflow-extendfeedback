@@ -1,3 +1,7 @@
+-- liquibase formatted sql
+-- changeset workflow-extendfeedback:create_db_workflow-extendfeedback.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- precondition-sql-check expectedResult:1 SELECT COUNT(*) FROM task_forms_extend_feedback_notification_cf WHERE 1 = 0
 --
 -- Table structure for table task_extend_feedback_update_status_cf
 --

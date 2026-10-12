@@ -33,11 +33,11 @@
  */
 package fr.paris.lutece.plugins.workflow.modules.extendfeedback.service;
 
+import java.util.Locale;
 import java.util.Map;
 
 import fr.paris.lutece.plugins.extend.modules.feedback.business.ExtendFeedback;
 import fr.paris.lutece.plugins.workflow.modules.extendfeedback.business.FeedbackNotificationTaskConfig;
-import fr.paris.lutece.plugins.workflowcore.business.resource.ResourceHistory;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
@@ -50,23 +50,28 @@ public interface IFeedbackNotificationService
     /**
      * Get available markers
      * 
-     * @param task
+     * @param locale
+     *            the locale of the labels
      * @return reference list of available markers
      */
-    ReferenceList getAvailableMarkers( );
+    ReferenceList getAvailableMarkers( Locale locale );
 
     /**
      * Get available markers values
      * 
      * @param extendFeedback
+     *            the feedback
+     * @return the value of each marker
      */
     Map<String, Object> getAvailableMarkersValues( ExtendFeedback extendFeedback );
 
     /**
      * Notify feedback author
      * 
-     * @param resourceHistory
+     * @param nIdFeedback
+     *            the id of the feedback
      * @param config
+     *            the task configuration
      */
-    void notifyFeedbackAuthor( ResourceHistory resourceHistory, FeedbackNotificationTaskConfig config );
+    void notifyFeedbackAuthor( int nIdFeedback, FeedbackNotificationTaskConfig config );
 }

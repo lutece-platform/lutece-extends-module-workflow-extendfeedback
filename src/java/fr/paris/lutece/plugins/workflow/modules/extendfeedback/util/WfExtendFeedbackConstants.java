@@ -43,7 +43,11 @@ public final class WfExtendFeedbackConstants
     // BEAN
     public static final String PLUGIN_NAME = "workflow-extendfeedback";
     public static final String BEAN_TASK_CONFIG_SERVICE = PLUGIN_NAME + ".updateStatusFeedbackConfigService";
+    public static final String BEAN_TASK_CONFIG_DAO = PLUGIN_NAME + ".updateStatusFeedbackConfigDAO";
+    public static final String BEAN_TASK_TYPE = PLUGIN_NAME + ".taskUpdateStatusFeedback";
     public static final String BEAN_NOTIF_CONFIG = PLUGIN_NAME + ".taskFeedbackNotificationConfigService";
+    public static final String BEAN_NOTIF_CONFIG_DAO = PLUGIN_NAME + ".taskFeedbackNotificationConfigDAO";
+    public static final String BEAN_NOTIF_TASK_TYPE = PLUGIN_NAME + ".taskFeedbackNotification";
     
     // MARK
     public static final String MARK_STATUS_LIST = "statusList";
