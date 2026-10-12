@@ -37,47 +37,75 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.extend.modules.feedback.util.constants.StatusFeedbackEnum;
 import fr.paris.lutece.plugins.workflow.modules.extendfeedback.util.WfExtendFeedbackConstants;
 import fr.paris.lutece.plugins.workflow.web.task.NoFormTaskComponent;
+import fr.paris.lutece.plugins.workflowcore.business.task.ITaskType;
 import fr.paris.lutece.plugins.workflowcore.service.config.ITaskConfigService;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 
  * UpdateStatusFeedbackTaskComponent
  *
  */
+@ApplicationScoped
+@Named( "workflow-extendfeedback.updateStatusFeedbackComponent" )
 public class UpdateStatusFeedbackTaskComponent extends NoFormTaskComponent
 {
-	// TEMPLATE
+    // TEMPLATE
     private static final String TEMPLATE_CONFIG = "admin/plugins/workflow/modules/extendfeedback/update_status_task_config_form.html";
 
-    @Inject
-    @Named( WfExtendFeedbackConstants.BEAN_TASK_CONFIG_SERVICE )
-    private ITaskConfigService _taskConfigService;
+    /**
+     * Constructor for the CDI proxy.
+     */
+    UpdateStatusFeedbackTaskComponent( )
+    {
+    }
 
+    /**
+     * Builds the component of the update status task.
+     *
+     * @param taskType
+     *            the task type
+     * @param taskConfigService
+     *            the task configuration service
+     */
+    @Inject
+    public UpdateStatusFeedbackTaskComponent( @Named( WfExtendFeedbackConstants.BEAN_TASK_TYPE ) ITaskType taskType,
+            @Named( WfExtendFeedbackConstants.BEAN_TASK_CONFIG_SERVICE ) ITaskConfigService taskConfigService )
+    {
+        setTaskType( taskType );
+        setTaskConfigService( taskConfigService );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDisplayConfigForm( HttpServletRequest request, Locale locale, ITask task )
     {
         Map<String, Object> model = new HashMap<>( );
 
         model.put( WfExtendFeedbackConstants.MARK_STATUS_LIST, StatusFeedbackEnum.getReferenceList( false ) );
-        model.put( WfExtendFeedbackConstants.MARK_CONFIG, _taskConfigService.findByPrimaryKey( task.getId( ) ) );
+        model.put( WfExtendFeedbackConstants.MARK_CONFIG, getTaskConfigService( ).findByPrimaryKey( task.getId( ) ) );
 
         HtmlTemplate html = AppTemplateService.getTemplate( TEMPLATE_CONFIG, locale, model );
 
         return html.getHtml( );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDisplayTaskInformation( int nIdHistory, HttpServletRequest request, Locale locale, ITask task )
     {

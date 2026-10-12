@@ -34,13 +34,18 @@
 package fr.paris.lutece.plugins.workflow.modules.extendfeedback.business;
 
 import fr.paris.lutece.plugins.workflowcore.business.config.ITaskConfigDAO;
+import fr.paris.lutece.plugins.workflow.modules.extendfeedback.util.WfExtendFeedbackConstants;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 
 /**
  * 
  * UpdateStatusFeedbackConfigDAO
  *
  */
+@ApplicationScoped
+@Named( WfExtendFeedbackConstants.BEAN_TASK_CONFIG_DAO )
 public class UpdateStatusFeedbackConfigDAO implements ITaskConfigDAO<UpdateStatusFeedbackConfig>
 {
 
@@ -49,6 +54,9 @@ public class UpdateStatusFeedbackConfigDAO implements ITaskConfigDAO<UpdateStatu
     private static final String SQL_QUERY_UPDATE = " UPDATE task_extend_feedback_update_status_cf SET status = ? WHERE id_task = ? ";
     private static final String SQL_QUERY_DELETE = " DELETE FROM task_extend_feedback_update_status_cf WHERE id_task = ? ";
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insert( UpdateStatusFeedbackConfig config )
     {
@@ -60,10 +68,12 @@ public class UpdateStatusFeedbackConfigDAO implements ITaskConfigDAO<UpdateStatu
             daoUtil.setBoolean( nIndex++, config.isStatus( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void store( UpdateStatusFeedbackConfig config )
     {
@@ -74,10 +84,12 @@ public class UpdateStatusFeedbackConfigDAO implements ITaskConfigDAO<UpdateStatu
 
             daoUtil.setInt( nIndex++, config.getIdTask( ) );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UpdateStatusFeedbackConfig load( int nIdTask )
     {
@@ -98,12 +110,13 @@ public class UpdateStatusFeedbackConfigDAO implements ITaskConfigDAO<UpdateStatu
                 config.setStatus( daoUtil.getBoolean( nIndex++ ) );
             }
 
-            daoUtil.free( );
-
             return config;
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void delete( int nIdTask )
     {
@@ -111,7 +124,6 @@ public class UpdateStatusFeedbackConfigDAO implements ITaskConfigDAO<UpdateStatu
         {
             daoUtil.setInt( 1, nIdTask );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 

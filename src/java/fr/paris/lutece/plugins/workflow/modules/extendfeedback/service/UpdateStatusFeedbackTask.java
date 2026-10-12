@@ -36,27 +36,26 @@ package fr.paris.lutece.plugins.workflow.modules.extendfeedback.service;
 import java.util.Locale;
 import java.util.Optional;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
-
+import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.extend.modules.feedback.business.ExtendFeedback;
-import fr.paris.lutece.plugins.extend.modules.feedback.service.ExtendFeedbackService;
 import fr.paris.lutece.plugins.extend.modules.feedback.service.IExtendFeedbackService;
 import fr.paris.lutece.plugins.workflow.modules.extendfeedback.business.UpdateStatusFeedbackConfig;
 import fr.paris.lutece.plugins.workflow.modules.extendfeedback.util.WfExtendFeedbackConstants;
-import fr.paris.lutece.plugins.workflowcore.business.resource.ResourceHistory;
 import fr.paris.lutece.plugins.workflowcore.service.config.ITaskConfigService;
-import fr.paris.lutece.plugins.workflowcore.service.resource.IResourceHistoryService;
-import fr.paris.lutece.plugins.workflowcore.service.resource.ResourceHistoryService;
 import fr.paris.lutece.plugins.workflowcore.service.task.SimpleTask;
 import fr.paris.lutece.portal.service.i18n.I18nService;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 
  * UpdateStatusFeedbackTask
  *
  */
+@Dependent
+@Named( "workflow-extendfeedback.updateStatusFeedbackTask" )
 public class UpdateStatusFeedbackTask extends SimpleTask
 {
 
@@ -65,38 +64,39 @@ public class UpdateStatusFeedbackTask extends SimpleTask
     private ITaskConfigService _taskConfigService;
 
     @Inject
-    @Named( ExtendFeedbackService.BEAN_SERVICE )
     private IExtendFeedbackService _extendFeedbackService;
 
-    @Inject
-    @Named( ResourceHistoryService.BEAN_SERVICE )
-    private IResourceHistoryService _resourceHistoryService;
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void processTask( int nIdResourceHistory, HttpServletRequest request, Locale locale )
+    public boolean processTaskWithResult( int nIdResource, String strResourceType, int nIdResourceHistory, HttpServletRequest request, Locale locale,
+            User user )
     {
         UpdateStatusFeedbackConfig config = _taskConfigService.findByPrimaryKey( getId( ) );
+        Optional<ExtendFeedback> extendFeedback = _extendFeedbackService.findById( nIdResource );
 
-        ResourceHistory resourceHistory = _resourceHistoryService.findByPrimaryKey( nIdResourceHistory );
-
-        if ( resourceHistory != null )
+        if ( extendFeedback.isPresent( ) && config != null )
         {
-            Optional<ExtendFeedback> extendFeedback = _extendFeedbackService.findById( resourceHistory.getIdResource( ) );
-
-            if ( extendFeedback.isPresent( ) && config != null )
-            {
-                extendFeedback.get( ).setStatus( config.isStatus( ) );
-                _extendFeedbackService.update( extendFeedback.get( ) );
-            }
+            extendFeedback.get( ).setStatus( config.isStatus( ) );
+            _extendFeedbackService.update( extendFeedback.get( ) );
         }
+
+        return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getTitle( Locale locale )
     {
         return I18nService.getLocalizedString( getTaskType( ).getTitleI18nKey( ), locale );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void doRemoveConfig( )
     {

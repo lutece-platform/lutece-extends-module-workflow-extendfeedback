@@ -38,27 +38,27 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import fr.paris.lutece.plugins.extend.modules.feedback.business.ExtendFeedback;
-import fr.paris.lutece.plugins.extend.modules.feedback.service.ExtendFeedbackService;
 import fr.paris.lutece.plugins.extend.modules.feedback.service.IExtendFeedbackService;
 import fr.paris.lutece.plugins.workflow.modules.extendfeedback.business.FeedbackNotificationTaskConfig;
-import fr.paris.lutece.plugins.workflowcore.business.resource.ResourceHistory;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mail.MailService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.ReferenceList;
-import fr.paris.lutece.util.html.HtmlTemplate;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * 
  * FeedbackNotificationService
  *
  */
+@ApplicationScoped
+@Named( "workflow-extendfeedback.feedbackNotificationService" )
 public class FeedbackNotificationService implements IFeedbackNotificationService
 {
     // MARKS
@@ -72,26 +72,23 @@ public class FeedbackNotificationService implements IFeedbackNotificationService
     private static final String PROPERTY_COMMENT = "module.workflow.extendfeedback.task_feedback_notification_config.markers.feedback_content";
     private static final String PROPERTY_RESOURCE_ID = "module.workflow.extendfeedback.task_feedback_notification_config.markers.resource_id";
     private static final String PROPERTY_FEEDBACK_TYPE = "module.workflow.extendfeedback.task_feedback_notification_config.markers.feedback_type";
-    
+
     @Inject
-    @Named( ExtendFeedbackService.BEAN_SERVICE )
-    IExtendFeedbackService _extendFeedbackService;
-    
+    private IExtendFeedbackService _extendFeedbackService;
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public ReferenceList getAvailableMarkers( )
+    public ReferenceList getAvailableMarkers( Locale locale )
     {
-        Locale locale = I18nService.getDefaultLocale( );
-
         ReferenceList refList = new ReferenceList( );
-        
+
         refList.addItem( MARK_DATE, I18nService.getLocalizedString( PROPERTY_DATE, locale ) );
         refList.addItem( MARK_COMMENT, I18nService.getLocalizedString( PROPERTY_COMMENT, locale ) );
         refList.addItem( MARK_RESOURCE_ID, I18nService.getLocalizedString( PROPERTY_RESOURCE_ID, locale ) );
         refList.addItem( MARK_FEEDBACK_TYPE, I18nService.getLocalizedString( PROPERTY_FEEDBACK_TYPE, locale ) );
-        
+
         return refList;
     }
 
@@ -102,12 +99,12 @@ public class FeedbackNotificationService implements IFeedbackNotificationService
     public Map<String, Object> getAvailableMarkersValues( ExtendFeedback extendFeedback )
     {
         Map<String, Object> markers = new HashMap<>( );
-        
+
         markers.put( MARK_DATE, extendFeedback.getUpdateStatusDate( ) );
         markers.put( MARK_COMMENT, extendFeedback.getComment( ) );
         markers.put( MARK_RESOURCE_ID, extendFeedback.getIdResource( ) );
         markers.put( MARK_FEEDBACK_TYPE, extendFeedback.getFeedbackType( ) );
-        
+
         return markers;
     }
 
@@ -115,18 +112,18 @@ public class FeedbackNotificationService implements IFeedbackNotificationService
      * {@inheritDoc}
      */
     @Override
-    public void notifyFeedbackAuthor( ResourceHistory resourceHistory, FeedbackNotificationTaskConfig config )
+    public void notifyFeedbackAuthor( int nIdFeedback, FeedbackNotificationTaskConfig config )
     {
-        Optional<ExtendFeedback> extendFeedback = _extendFeedbackService.findById( resourceHistory.getIdResource( ) );
+        Optional<ExtendFeedback> extendFeedback = _extendFeedbackService.findById( nIdFeedback );
 
-        if ( extendFeedback.isPresent( ) )
+        if ( config != null && extendFeedback.isPresent( ) && StringUtils.isNotBlank( extendFeedback.get( ).getEmail( ) ) )
         {
+            Locale locale = I18nService.getDefaultLocale( );
             Map<String, Object> model = getAvailableMarkersValues( extendFeedback.get( ) );
-            HtmlTemplate html = AppTemplateService.getTemplateFromStringFtl( config.getMessage( ), I18nService.getDefaultLocale( ) , model );
-            String strSubject = AppTemplateService.getTemplateFromStringFtl( config.getSubject( ), I18nService.getDefaultLocale( ) , model ).getHtml( );
-            
-            MailService.sendMailHtml( StringUtils.EMPTY, StringUtils.EMPTY, extendFeedback.get( ).getEmail( ), config.getSenderName( ), config.getSenderEmail( ),
-                    strSubject, html.getHtml( ) );
+            String strMessage = AppTemplateService.getTemplateFromStringFtl( config.getMessage( ), locale, model ).getHtml( );
+            String strSubject = StringEscapeUtils.unescapeHtml4( AppTemplateService.getTemplateFromStringFtl( config.getSubject( ), locale, model ).getHtml( ) );
+
+            MailService.sendMailHtml( extendFeedback.get( ).getEmail( ), config.getSenderName( ), config.getSenderEmail( ), strSubject, strMessage );
         }
     }
 }
